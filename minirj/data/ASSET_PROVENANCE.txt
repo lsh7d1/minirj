@@ -1,0 +1,16 @@
+Asset provenance
+================
+whirlpool_tables.bin: 16472 bytes, concatenated target tables:
+RC (88 bytes) then C0..C7 (2048 bytes each).
+SHA256 ca991971e449c62799a6da92659f93a664a72250e1c004b5abb3ff181c047715
+
+Runtime checks the pinned length and SHA256 before use.
+
+Embedded material
+-----------------
+crypto/v3.py embeds the 20/16/24-byte digests derived from the target
+app-data slice, used as selector inputs.
+crypto/tiger.py embeds TIGER_TABLE (1024 64-bit entries, recorded target symbol
+Tiger::table at 0x4d13a0). Fixed CEncryption material (in crypto/cencryption.py
+and core/file_reg.py) and target-specific algorithm constants have source annotations.
+Historical research paths/symbols in comments are provenance identifiers.

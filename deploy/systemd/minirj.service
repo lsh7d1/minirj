@@ -1,0 +1,40 @@
+[Unit]
+Description=MiniRJ campus authentication
+Wants=NetworkManager.service
+After=NetworkManager.service
+StartLimitIntervalSec=0
+
+[Service]
+Type=notify
+User=minirj
+Group=minirj
+EnvironmentFile=/etc/minirj/service.conf
+LoadCredential=username:/etc/minirj/username
+LoadCredential=password:/etc/minirj/password
+ExecStartPre=/usr/bin/python3 -I /opt/minirj/minirj.pyz --down
+ExecStart=/usr/bin/python3 -I -u /opt/minirj/minirj.pyz
+ExecStopPost=/usr/bin/python3 -I /opt/minirj/minirj.pyz --down
+Restart=always
+RestartSec=30s
+TimeoutStartSec=75s
+TimeoutStopSec=20s
+WatchdogSec=90s
+KillMode=control-group
+WorkingDirectory=/
+UMask=0077
+LimitCORE=0
+NoNewPrivileges=yes
+AmbientCapabilities=CAP_NET_RAW
+CapabilityBoundingSet=CAP_NET_RAW
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+LockPersonality=yes
+RestrictAddressFamilies=AF_PACKET AF_INET AF_INET6 AF_UNIX AF_NETLINK
+UnsetEnvironment=PYTHONPATH PYTHONHOME LD_LIBRARY_PATH LD_PRELOAD
+
+[Install]
+WantedBy=multi-user.target

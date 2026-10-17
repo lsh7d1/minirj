@@ -1,0 +1,7 @@
+// Allow the minirj service user to activate/deactivate its NetworkManager profile.
+polkit.addRule(function(action, subject) {
+  if (subject.user == "minirj" &&
+      action.id == "org.freedesktop.NetworkManager.network-control") {
+    return polkit.Result.YES;
+  }
+});

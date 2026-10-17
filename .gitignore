@@ -1,0 +1,49 @@
+# Local data
+.local/
+
+# Python / build output
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+build/
+dist/
+
+# Local configuration / credentials (service.conf.example remains tracked)
+.env
+.env.*
+.envrc
+credentials/
+secrets/
+username
+password
+SuConfig.dat
+fileReg.ini
+service.conf
+*.nmconnection
+*.key
+*.pem
+
+# Machine-specific evidence and historical inventories
+/reports/
+/evidence/
+/artifacts/
+/backups/
+/docs/validation/
+/docs/DELIVERY_MANIFEST.json
+/docs/SOURCE_SNAPSHOT.json
+live-trial-*.json
+*.pcap
+*.pcapng
+*.log
+*.core
+/core
+/core.[0-9]*
+
+# Editor / backup files
+.DS_Store
+*.swp
+*.swo
+*.bak
+*.orig
+*~

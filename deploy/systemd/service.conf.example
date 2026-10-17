@@ -1,0 +1,4 @@
+# No account/password here. Set the dedicated interface and NM profile UUID.
+MINIRJ_INTERFACE=eth0
+MINIRJ_NM_UUID=00000000-0000-0000-0000-000000000000
+MINIRJ_PROBE_URL=https://www.baidu.com/
