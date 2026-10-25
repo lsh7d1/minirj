@@ -25,6 +25,7 @@ PROBE_CONNECT_TIMEOUT = 6
 PROBE_TOTAL_TIMEOUT = 8
 PROBE_PROCESS_TIMEOUT = 10
 PROBE_RETRY_DELAY = 1
+ADDRESS_RECHECK_DELAY = 5
 REAUTH_GRACE = 15
 HEALTH_CYCLE_TIMEOUT = 2 * PROBE_PROCESS_TIMEOUT + PROBE_RETRY_DELAY + REAUTH_GRACE + 1
 
@@ -271,6 +272,7 @@ def health_loop(machine, engine, interface, url, stopped, failed):
     def online_snapshot(deadline):
         nonlocal reauth_started
         waited = False
+        address_recheck = False
         while not stopped.is_set():
             now = time.monotonic()
             if now >= deadline:
@@ -287,9 +289,13 @@ def health_loop(machine, engine, interface, url, stopped, failed):
             except Exception:
                 raise HealthFailure("address_unavailable") from None
             if not snapshot.ready:
+                if not address_recheck:
+                    address_recheck = True
+                    print("health pending: reason=address_unavailable; address recheck pending", flush=True)
+                    if stopped.wait(ADDRESS_RECHECK_DELAY):
+                        return None
+                    continue
                 raise HealthFailure("address_unavailable")
-            if online_ip is not None and snapshot.ip != online_ip:
-                raise HealthFailure("address_changed")
             if machine.state == AuthState.ONLINE:
                 reauth_started = None
                 return snapshot, waited

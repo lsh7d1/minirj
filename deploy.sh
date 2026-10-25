@@ -19,6 +19,7 @@ CONFIG_DIR=/etc/minirj
 UNIT=minirj.service
 UNIT_FILE=/etc/systemd/system/minirj.service
 POLKIT_RULE=/etc/polkit-1/rules.d/50-minirj.rules
+DISPATCHER_SCRIPT=/etc/NetworkManager/dispatcher.d/90-minirj-dhcp-policy
 UNIT_DROPIN=/etc/systemd/system/minirj.service.d/10-root-fallback.conf
 LOCK_FILE=/run/minirj-deploy.lock
 PYTHON=/usr/bin/python3
@@ -261,6 +262,7 @@ verify_source() {
     [[ -d $ROOT/minirj && -f $ROOT/minirj/main.py ]] || fail '未找到源码目录 minirj'
     [[ -f $ROOT/deploy/build_zipapp.py && -f $ROOT/deploy/zipapp_main.py ]] || fail '缺少 zipapp 构建文件'
     [[ -f $ROOT/deploy/systemd/$UNIT && -f $ROOT/deploy/systemd/50-minirj.rules ]] || fail '缺少配套 deploy/systemd/ 文件'
+    [[ -f $ROOT/deploy/network-manager/90-minirj-dhcp-policy ]] || fail '缺少 deploy/network-manager/90-minirj-dhcp-policy'
     printf '使用源码目录：%s\n' "$ROOT"
 }
 install_files() {
@@ -274,6 +276,7 @@ install_files() {
         --output "$INSTALL_DIR/minirj.pyz"
     chmod 755 "$INSTALL_DIR/minirj.pyz"
     install -m 644 "$ROOT/deploy/systemd/$UNIT" "$UNIT_FILE"
+    install -D -m 755 "$ROOT/deploy/network-manager/90-minirj-dhcp-policy" "$DISPATCHER_SCRIPT"
     if ((POLKIT_AVAILABLE)); then
         install -m 644 "$ROOT/deploy/systemd/50-minirj.rules" "$POLKIT_RULE"
         rm -f "$UNIT_DROPIN"

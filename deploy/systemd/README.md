@@ -3,7 +3,8 @@
 部署、启动、自启和维护使用根目录的 [deploy.sh](../../deploy.sh)，命令见 [README](../../README.md)。
 
 本目录包含 `minirj.service`、polkit 规则和非敏感配置示例。
-`deploy.sh` 用于人工安装/维护。运行依赖 NetworkManager 和 polkit。
+`deploy.sh` 用于人工安装/维护。运行依赖 NetworkManager、polkit 和 nftables
+（dispatcher 阻断规则，见 [deploy/network-manager](../network-manager/README.md)）。
 服务以用户 `minirj` 运行，仅保留 `CAP_NET_RAW`；无权限读取的其他用户进程在竞品扫描中跳过。
 主机没有 polkit 时，`deploy.sh` 会安装 `10-root-fallback.conf` drop-in，
 以 root 运行（`CAP_NET_RAW` + `CAP_SYS_PTRACE`）并保持其余加固项。
@@ -29,6 +30,7 @@
 | `/opt/minirj/minirj.pyz` | 运行入口（源码与资产） |
 | `/etc/systemd/system/minirj.service` | 自定义 unit |
 | `/etc/polkit-1/rules.d/50-minirj.rules` | 允许 `minirj` 激活/停用 NM profile |
+| `/etc/NetworkManager/dispatcher.d/90-minirj-dhcp-policy` | 公网租约下阻断 T1 DHCP 单播续租 |
 | `/etc/minirj/service.conf` | 接口、NM UUID、HTTPS 探测 URL |
 | `/etc/minirj/username`、`password` | 凭据，通过 `LoadCredential` 读取 |
 

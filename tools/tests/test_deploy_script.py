@@ -143,6 +143,9 @@ class DeployScriptTests(unittest.TestCase):
         (self.kit / "deploy/systemd").mkdir(parents=True)
         for name in ("minirj.service", "50-minirj.rules"):
             shutil.copy2(ROOT / "deploy/systemd" / name, self.kit / "deploy/systemd" / name)
+        (self.kit / "deploy/network-manager").mkdir(parents=True)
+        shutil.copy2(ROOT / "deploy/network-manager" / "90-minirj-dhcp-policy",
+                     self.kit / "deploy/network-manager" / "90-minirj-dhcp-policy")
         for name in ("build_zipapp.py", "zipapp_main.py"):
             shutil.copy2(ROOT / "deploy" / name, self.kit / "deploy" / name)
         (self.kit / "tests").mkdir()
@@ -158,6 +161,8 @@ class DeployScriptTests(unittest.TestCase):
             "LOCK_FILE=/run/minirj-deploy.lock": f'LOCK_FILE="{self.base}/lock"',
             "PYTHON=/usr/bin/python3": f'PYTHON="{self.base}/bin/python3"',
             "POLKIT_RULE=/etc/polkit-1/rules.d/50-minirj.rules": f'POLKIT_RULE="{self.base}/polkit/50-minirj.rules"',
+            "DISPATCHER_SCRIPT=/etc/NetworkManager/dispatcher.d/90-minirj-dhcp-policy":
+                f'DISPATCHER_SCRIPT="{self.base}/dispatcher/90-minirj-dhcp-policy"',
             "[[ -d /etc/polkit-1/rules.d ]]": f'[[ -d "{self.base}/polkit" ]]',
         }
         for old, new in replacements.items():
